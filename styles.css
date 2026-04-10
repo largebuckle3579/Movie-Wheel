@@ -13,6 +13,12 @@
   --wheel-max: min(600px, min(92vw, 88vmin));
 }
 
+@media (max-width: 599px) {
+  :root {
+    --wheel-max: min(600px, min(97vw, 94vmin));
+  }
+}
+
 html {
   scroll-behavior: smooth;
 }
@@ -25,14 +31,17 @@ body {
   position: relative;
 }
 
-/* Full-screen Nailong + light veil so UI stays readable */
+/* Nailong background — slightly zoomed out so it feels less huge */
 body::before {
   content: "";
   position: fixed;
   inset: 0;
   z-index: -2;
-  background: url("images/nailong-standing.png") center center / cover no-repeat;
   background-color: #87ceeb;
+  background-image: url("images/nailong-standing.png");
+  background-repeat: no-repeat;
+  background-position: center 42%;
+  background-size: min(78vw, 680px) auto;
 }
 
 body::after {
@@ -132,7 +141,8 @@ body::after {
 
 input[type="text"] {
   width: 100%;
-  padding: 0.8rem 1.1rem;
+  min-height: 48px;
+  padding: 0.85rem 1.15rem;
   border: 3px solid var(--nailong-yellow);
   border-radius: 999px;
   font-size: 1rem;
@@ -147,13 +157,15 @@ input[type="text"]:focus {
 }
 
 button {
-  padding: 0.8rem 1.2rem;
+  min-height: 48px;
+  padding: 0.85rem 1.35rem;
   border: none;
   border-radius: 999px;
   background: var(--nailong-green);
   color: #fff;
   font-weight: 800;
   font-family: inherit;
+  font-size: 1rem;
   cursor: pointer;
   box-shadow: 0 4px 0 var(--nailong-green-dark);
   transition: transform 0.08s ease, box-shadow 0.08s ease;
@@ -302,8 +314,9 @@ canvas {
 .remove-btn {
   background: #ef5350;
   box-shadow: 0 3px 0 #c62828;
-  padding: 0.4rem 0.65rem;
-  font-size: 0.85rem;
+  min-height: 44px;
+  padding: 0.5rem 0.85rem;
+  font-size: 0.9rem;
   flex-shrink: 0;
 }
 
@@ -364,7 +377,17 @@ canvas {
   box-shadow: var(--shadow);
   object-fit: contain;
   background: rgba(255, 255, 255, 0.9);
-  animation: pop 0.55s ease;
+  opacity: 0;
+  transition: opacity 0.45s ease;
+  will-change: opacity, transform;
+}
+
+.pick-img.pick-img--in {
+  opacity: 1;
+}
+
+.pick-img.pick-img--wiggle {
+  animation: nailong-wiggle 0.82s ease 0.06s both;
 }
 
 .pick-movie {
@@ -378,17 +401,34 @@ canvas {
   color: var(--nailong-green-dark);
 }
 
-@keyframes pop {
+@keyframes nailong-wiggle {
   0% {
-    transform: scale(0.85);
-    opacity: 0;
+    transform: rotate(0deg) translateY(0);
   }
-  70% {
-    transform: scale(1.05);
+  20% {
+    transform: rotate(-7deg) translateY(-3px) scale(1.03);
+  }
+  40% {
+    transform: rotate(6deg) translateY(0) scale(1.02);
+  }
+  60% {
+    transform: rotate(-4deg) translateY(-2px) scale(1.02);
+  }
+  80% {
+    transform: rotate(3deg) translateY(0) scale(1.01);
   }
   100% {
-    transform: scale(1);
-    opacity: 1;
+    transform: rotate(0deg) translateY(0) scale(1);
+  }
+}
+
+@media (max-width: 599px) {
+  .pick-img {
+    width: min(220px, 58vw);
+  }
+
+  .pick-movie {
+    font-size: clamp(1.1rem, 4vw, 1.4rem);
   }
 }
 

@@ -20,6 +20,16 @@ const REWARD_IMAGES = [
   "images/rewards/nailong-6.png",
 ];
 
+const SPIN_MESSAGES = [
+  "Nailong is thinking…",
+  "Consulting the popcorn…",
+  "Shuffling the seats…",
+  "Checking the snack budget…",
+  "Arguing with the remote…",
+  "Reading very serious film blogs…",
+  "Almost there…",
+];
+
 const colors = [
   "#FFD200",
   "#FFE566",
@@ -34,6 +44,14 @@ const colors = [
 const movies = [];
 let rotation = 0;
 let isSpinning = false;
+let spinMessageIntervalId = null;
+
+function clearSpinMessages() {
+  if (spinMessageIntervalId !== null) {
+    clearInterval(spinMessageIntervalId);
+    spinMessageIntervalId = null;
+  }
+}
 
 function setWheelCapVisible(visible) {
   wheelCap.classList.toggle("is-hidden", !visible);
@@ -43,18 +61,70 @@ function hidePick() {
   pickReveal.classList.add("hidden");
   pickImg.removeAttribute("src");
   pickImg.alt = "";
+  pickImg.classList.remove("pick-img--in", "pick-img--wiggle");
   pickMovie.textContent = "";
   resultText.classList.remove("result--hidden");
 }
 
+function fireConfetti() {
+  if (typeof confetti !== "function") return;
+
+  const burst = (x, angle) => {
+    confetti({
+      particleCount: 55,
+      spread: 62,
+      startVelocity: 38,
+      angle,
+      origin: { x, y: 0.72 },
+      ticks: 220,
+      gravity: 1.05,
+      scalar: 0.95,
+    });
+  };
+
+  burst(0.22, 60);
+  burst(0.78, 120);
+  setTimeout(() => {
+    confetti({
+      particleCount: 40,
+      spread: 100,
+      origin: { x: 0.5, y: 0.68 },
+      ticks: 180,
+      gravity: 1.1,
+    });
+  }, 180);
+}
+
 function showPick(winner) {
   const src = REWARD_IMAGES[Math.floor(Math.random() * REWARD_IMAGES.length)];
-  pickImg.src = src;
+  pickImg.classList.remove("pick-img--in", "pick-img--wiggle");
+  void pickImg.offsetWidth;
+
   pickImg.alt = "";
   pickMovie.textContent = winner;
   pickReveal.classList.remove("hidden");
   resultText.textContent = "";
   resultText.classList.add("result--hidden");
+
+  const afterLoad = () => {
+    requestAnimationFrame(() => {
+      pickImg.classList.add("pick-img--in");
+      requestAnimationFrame(() => {
+        pickImg.classList.add("pick-img--wiggle");
+        fireConfetti();
+      });
+    });
+  };
+
+  pickImg.onload = () => {
+    pickImg.onload = null;
+    afterLoad();
+  };
+  pickImg.src = src;
+  if (pickImg.complete && pickImg.naturalWidth > 0) {
+    pickImg.onload = null;
+    afterLoad();
+  }
 }
 
 function drawWheel() {
@@ -174,8 +244,15 @@ function spinWheel() {
   isSpinning = true;
   spinBtn.disabled = true;
   hidePick();
+  clearSpinMessages();
+
   resultText.classList.remove("result--hidden");
-  resultText.textContent = "Spinning…";
+  let msgIndex = 0;
+  resultText.textContent = SPIN_MESSAGES[msgIndex];
+  spinMessageIntervalId = window.setInterval(() => {
+    msgIndex = (msgIndex + 1) % SPIN_MESSAGES.length;
+    resultText.textContent = SPIN_MESSAGES[msgIndex];
+  }, 1000);
 
   const extraRotation = Math.PI * (10 + Math.random() * 8);
   const startRotation = rotation;
@@ -193,6 +270,7 @@ function spinWheel() {
     if (progress < 1) {
       requestAnimationFrame(animate);
     } else {
+      clearSpinMessages();
       rotation %= Math.PI * 2;
       drawWheel();
       const winner = pickWinner();
@@ -218,6 +296,7 @@ resetBtn.addEventListener("click", () => {
   if (isSpinning) return;
   movies.length = 0;
   rotation = 0;
+  clearSpinMessages();
   resultText.classList.remove("result--hidden");
   resultText.textContent = "Add at least 2 movies to spin.";
   hidePick();
