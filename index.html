@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Movie Wheel</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@600;800&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <main class="app">
+    <header class="banner card">
+      <p class="site-title">Movie Wheel</p>
+    </header>
+
+    <div class="layout">
+      <section class="wheel-column" aria-label="Movie wheel">
+        <div class="wheel-section">
+          <div class="pointer" aria-hidden="true"></div>
+          <canvas id="wheel" width="600" height="600" aria-label="Movie wheel canvas"></canvas>
+          <div class="wheel-cap" id="wheel-cap" aria-hidden="true">
+            <img src="images/nailong-happy.png" width="120" height="120" alt="" />
+          </div>
+        </div>
+      </section>
+
+      <div class="side-column">
+        <section class="controls card" aria-label="Movie controls">
+          <form id="movie-form" class="movie-form">
+            <input
+              id="movie-input"
+              type="text"
+              placeholder="Type a movie title…"
+              autocomplete="off"
+              required
+            />
+            <button type="submit">Add Movie</button>
+          </form>
+
+          <div class="button-row">
+            <button id="spin-btn" type="button">Spin Wheel</button>
+            <button id="reset-btn" type="button" class="secondary">Reset</button>
+          </div>
+        </section>
+
+        <section class="list-section card" aria-label="Movie list">
+          <h2>Suggestions</h2>
+          <ul id="movie-list"></ul>
+        </section>
+
+        <div class="result-wrap card">
+          <p id="result" class="result" aria-live="polite">Add at least 2 movies to spin.</p>
+          <div id="pick-reveal" class="pick-reveal hidden" aria-live="polite">
+            <img id="pick-img" class="pick-img" src="" width="220" height="220" alt="" />
+            <p id="pick-movie" class="pick-movie"></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
