@@ -10,6 +10,7 @@ const wheelCap = document.getElementById("wheel-cap");
 const pickReveal = document.getElementById("pick-reveal");
 const pickImg = document.getElementById("pick-img");
 const pickMovie = document.getElementById("pick-movie");
+const winnerPanel = document.getElementById("winner-panel");
 
 const REWARD_IMAGES = [
   "images/rewards/nailong-1.png",
@@ -18,6 +19,13 @@ const REWARD_IMAGES = [
   "images/rewards/nailong-4.png",
   "images/rewards/nailong-5.png",
   "images/rewards/nailong-6.png",
+  "images/rewards/nailong-7.png",
+  "images/rewards/nailong-8.png",
+  "images/rewards/nailong-9.png",
+  "images/rewards/nailong-10.png",
+  "images/rewards/nailong-11.png",
+  "images/rewards/nailong-12.png",
+  "images/rewards/nailong-13.png",
 ];
 
 const SPIN_MESSAGES = [
@@ -100,30 +108,49 @@ function showPick(winner) {
   pickImg.classList.remove("pick-img--in", "pick-img--wiggle");
   void pickImg.offsetWidth;
 
-  pickImg.alt = "";
+  pickImg.alt = `Nailong — ${winner}`;
   pickMovie.textContent = winner;
   pickReveal.classList.remove("hidden");
   resultText.textContent = "";
   resultText.classList.add("result--hidden");
 
+  winnerPanel.scrollIntoView({ behavior: "smooth", block: "nearest" });
+
+  let finished = false;
   const afterLoad = () => {
+    if (finished) return;
+    finished = true;
     requestAnimationFrame(() => {
       pickImg.classList.add("pick-img--in");
       requestAnimationFrame(() => {
         pickImg.classList.add("pick-img--wiggle");
-        fireConfetti();
+        setTimeout(() => fireConfetti(), 80);
       });
     });
   };
 
   pickImg.onload = () => {
     pickImg.onload = null;
+    pickImg.onerror = null;
     afterLoad();
   };
+  pickImg.onerror = () => {
+    pickImg.onload = null;
+    pickImg.onerror = null;
+    pickImg.alt = "";
+    afterLoad();
+  };
+
   pickImg.src = src;
+
   if (pickImg.complete && pickImg.naturalWidth > 0) {
     pickImg.onload = null;
+    pickImg.onerror = null;
     afterLoad();
+  } else {
+    window.setTimeout(() => {
+      if (!finished) afterLoad();
+    }, 4000);
   }
 }
 

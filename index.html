@@ -49,16 +49,18 @@
           <h2>Suggestions</h2>
           <ul id="movie-list"></ul>
         </section>
-
-        <div class="result-wrap card">
-          <p id="result" class="result" aria-live="polite">Add at least 2 movies to spin.</p>
-          <div id="pick-reveal" class="pick-reveal hidden" aria-live="polite">
-            <img id="pick-img" class="pick-img" src="" width="220" height="220" alt="" />
-            <p id="pick-movie" class="pick-movie"></p>
-          </div>
-        </div>
       </div>
     </div>
+
+    <section class="winner-panel card" id="winner-panel" aria-live="polite">
+      <p id="result" class="result">Add at least 2 movies to spin.</p>
+      <div id="pick-reveal" class="pick-reveal hidden">
+        <div class="pick-visual">
+          <img id="pick-img" class="pick-img" src="" width="220" height="220" alt="" />
+        </div>
+        <p id="pick-movie" class="pick-movie"></p>
+      </div>
+    </section>
   </main>
 
   <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.3/dist/confetti.browser.min.js"></script>
